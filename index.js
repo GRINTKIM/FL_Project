@@ -24,3 +24,6 @@ app.use('/api/postTest1', postTest1)
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+const db = require("./models");
+db.sequelize.sync();
