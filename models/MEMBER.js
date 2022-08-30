@@ -1,30 +1,30 @@
 module.exports = (sequelize, Sequelize) => {
-	const userInfo = sequelize.define("userInfo", {
-		USERID: {
+	const MEMBER = sequelize.define("MEMBER", {
+		MEM_NO: {
   			type: Sequelize.STRING(100),
 			allowNull: false,
 			primaryKey: true
 		},
-  		USERNAME: {
+  		GENDER: {
   			type: Sequelize.STRING(100),
 			allowNull: false
 		},
-      	AGE: {
+      	AGEBAND: {
   			type: Sequelize.INTEGER,
-			  allowNull: true
+			  allowNull: false
 		},
-		SEX: {
-			type: Sequelize.STRING(10),
-			allowNull: true
+		DATE: {
+			type: Sequelize.DATE,
+			allowNull: false
 		},
-		Adress: {
+		ADDRESS: {
 			type: Sequelize.STRING(100),
-			allowNull: true
+			allowNull: false
 		}
 	},{
 		timestamps: false,
 		freezeTableName: true
 	});
 
-	return userInfo
+	return MEMBER
 };
