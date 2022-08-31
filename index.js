@@ -11,6 +11,14 @@ app.use(express.urlencoded({
 
 const port = 3010
 
+const cors = require('cors');
+let corsOption = {
+  origin: "http://localhost:8080",    // 허용 주소
+  credential: true                    // true 시 설정 내용을 응답헤더에 추가해 줌
+}
+app.use(cors(corsOption))             // CORS 미들웨어 추가
+
+
 const getTest1 = require('./router/getTest1')
 const postTest1 = require('./router/postTest1')
 const PostgreDataTest1 = require('./router/PostgreDataTest1')
