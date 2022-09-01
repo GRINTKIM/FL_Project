@@ -89,10 +89,10 @@ router.get('/userInfo', async function(req, res){
       res.send(member_join);
       return;
     }
-    else if (req.body.join != "inner" ) {
-      res.send({message: "Wrong parameter!"});
-      return;
-    }
+    // else if (JSON.parse(req.body.join) != "inner" ) {
+    //   res.send({message: "Wrong parameter!"});
+    //   return;
+    // }
     else return res.send({message: "Something is Wrong!"});
     })
 
