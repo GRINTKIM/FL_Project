@@ -32,6 +32,7 @@ router.get('/test', (req, res) =>{
     if (err) throw err;
 
     console.log('results: %j', results)
+    res.send('업로드한 이미지의 숫자는 ' + results + ' 입니다.')
     });
 }
 )

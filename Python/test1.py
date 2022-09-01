@@ -1,13 +1,21 @@
 import os
-import numpy as np
+# import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import torch
-import torchvision
+# import torchvision
 import torch.nn as nn
-import torch.optim as optim
+# import torch.optim as optim
 from torchvision import transforms
 from torch.utils.data.dataloader import DataLoader
+
+
+# Inference 할 이미지 (업로드 한 이미지)
+img_path = "Python/5/00035_1.jpg"
+
+# print(os.getcwd())
+# print(img_path)
+# image = Image.open(img_path).convert('RGB')
 
 
 #모델 옵션 설정
@@ -63,47 +71,59 @@ class CNN(nn.Module): #CNN 모델 구현
 
 
 class DigitData:
-    def __init__(self, path, size=size, split='train'):
-        self.path = path
-        self.size = (size, size)       
+    def __init__(self, img_path, size):
+        self.img_path = img_path
+        self.size = (size, size)
         
         # 전체 데이터셋의 RGB 평균과 표준편차
         mean = [0.80048384, 0.44734452, 0.50106468]
         std = [0.22327253, 0.29523788, 0.24583565]
-        self.transform = transforms.Compose([transforms.Resize(self.size), transforms.ToTensor(),
+        self.transform = transforms.Compose([transforms.Resize(self.size), 
+                                             transforms.ToTensor(),
                                              transforms.Normalize(mean=mean, std=std)])
 
+
     def __len__(self):
-        return len(self.path)
+        return len(self.img_path)
 
     def __getitem__(self, idx):
-        path = os.path.join(self.path, self.path[idx])
-        img = Image.open(path).convert('RGB')
+        path_idx = img_path[idx]
+        img = Image.open(img_path).convert('RGB')
         img = self.transform(img)
-        target = int(self.path[idx].split('/')[0])
+        target = int(img_path.split('/')[1][0])    # 임의로 '_'로 split 하고 target 값을 지정한 것임.
         return img, target
 
 
-path = "Python\00035_1.jpg"
+def inference_result():
+    out_index = str(output_index[0])
+    print(out_index[7])
 
-data = DigitData(path, size, 'number') #데이터 사이즈 및 이미지 저장 valid
-data_loader = DataLoader(data, batch_size=batch_size, shuffle=True) #데이터 전처리
 
-# device = "cuda" if torch.cuda.is_available() else "cpu"
+def visualize_image(img_path):
+    image = Image.open(img_path)
+    plt.imshow(image)
+    plt.show()
+
+
+
+inference_data = DigitData(img_path, size)
+inference_loader = DataLoader(inference_data, batch_size=batch_size) #데이터 전처리
+
 device = torch.device("cpu")
-torch.load("Python\model.pth", map_location='cpu')
-model = CNN().to(device)
+model = CNN()
+model.load_state_dict(torch.load("Python/model.pth", map_location=device))
+# torch.load("Python/model.pth", map_location='cpu')
+# model = CNN().to(device)
+# model.load("Python\model.pth", map_location='cpu')
 # model.load_state_dict(torch.load("Python\model.pth"))
-
 
 correct = 0
 total = 0
 
-# evaluate model
 model.eval()
 
 with torch.no_grad():
-    for image,label in data_loader: #valid_loader에 있는 이미지와 이미지에 대한 답을 꺼내 학습 돌리고 손실률 계산하여 저장
+    for image,label in inference_loader: #valid_loader에 있는 이미지와 이미지에 대한 답을 꺼내 학습 돌리고 손실률 계산하여 저장
         x = image.to(device)
         y = label.to(device)
 
@@ -111,7 +131,8 @@ with torch.no_grad():
         
         # torch.max함수는 (최댓값,index)를 반환 
         _,output_index = torch.max(output,1)
-        
+        # print(output_index[0])
+
         # 전체 개수 += 라벨의 개수
         total += label.size(0)
         
@@ -119,8 +140,7 @@ with torch.no_grad():
         correct += (output_index == y).sum().float()
     
     # 정확도 도출
-    print("Accuracy of Test Data: {}%".format(100*correct/total))
-    print(output_index)
+    # print("Accuracy of Test Data: {}%".format(100*correct/total))
 
-
-# print(model)
+inference_result()
+# visualize_image(img_path)
