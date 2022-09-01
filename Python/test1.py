@@ -1,4 +1,4 @@
-import os
+# import os
 # import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ from torch.utils.data.dataloader import DataLoader
 
 
 # Inference 할 이미지 (업로드 한 이미지)
-img_path = "Python/5/00035_1.jpg"
+img_path = "Python/1/00003_6.jpg"
 
 # print(os.getcwd())
 # print(img_path)
@@ -19,11 +19,10 @@ img_path = "Python/5/00035_1.jpg"
 
 
 #모델 옵션 설정
-batch_size = 128
-learning_rate = 0.0001
-num_epoch = 20
-size = 28
-
+size = 28               # input image를 변환할 사이즈, 28x28
+batch_size = 128        # 배치 사이즈
+learning_rate = 0.0001  # learning rate
+num_epoch = 20          # epoch
 
 class CNN(nn.Module): #CNN 모델 구현
     def __init__(self):
@@ -32,37 +31,35 @@ class CNN(nn.Module): #CNN 모델 구현
         
         # batch_size = 100
         self.layer = nn.Sequential(
-            # [100,3,28,28] -> [100,16,24,24]
+            # [128,3,28,28] -> [128,32,24,24]
             nn.Conv2d(in_channels=3,out_channels=32,kernel_size=5),
             nn.ReLU(),
             
-            # [100,16,24,24] -> [100,32,20,20]
+            # [128,32,24,24] -> [128,64,20,20]
             nn.Conv2d(in_channels=32,out_channels=64,kernel_size=5),
             nn.ReLU(),
             
-            # [100,32,20,20] -> [100,32,10,10]
+            # [128,64,20,20] -> [128,64,10,10]
             nn.MaxPool2d(kernel_size=2,stride=2),
             
-            # [100,32,10,10] -> [100,64,6,6]
+            # [128,64,10,10] -> [128,128,6,6]
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5),
             nn.ReLU(),
             
-            # [100,64,6,6] -> [100,64,3,3]
+            # [128,128,6,6] -> [128,128,3,3]
             nn.MaxPool2d(kernel_size=2,stride=2)          
         )
 
         self.fc_layer = nn.Sequential(
-        	# [100,64*3*3] -> [100,100]
             nn.Linear(128*3*3,128),                                              
             nn.ReLU(),
-            # [100,100] -> [100,10]
             nn.Linear(128,10)                                                   
         )       
         
     def forward(self,x):
     	# self.layer에 정의한 연산 수행
         out = self.layer(x)
-        # view 함수를 이용해 텐서의 형태를 [100,나머지]로 변환
+        # view 함수를 이용해 텐서의 형태를 [128,나머지]로 변환
         out = out.view(out.size(0),-1)
         # self.fc_layer 정의한 연산 수행    
         out = self.fc_layer(out)
@@ -90,8 +87,8 @@ class DigitData:
         path_idx = img_path[idx]
         img = Image.open(img_path).convert('RGB')
         img = self.transform(img)
-        target = int(img_path.split('/')[1][0])    # 임의로 '_'로 split 하고 target 값을 지정한 것임.
-        return img, target
+        target = int(img_path.split('/')[1][0])    # 임의로 '_'로 split 하고 target 값을 지정한 것임.(이미지 파일의 위치에 따라 다르게 적용해야 함)
+        return img, target                         # upload 된 이미지는 어떤 식으로 처리할 지는 추후 결정해야 함
 
 
 def inference_result():
@@ -107,7 +104,7 @@ def visualize_image(img_path):
 
 
 inference_data = DigitData(img_path, size)
-inference_loader = DataLoader(inference_data, batch_size=batch_size) #데이터 전처리
+inference_loader = DataLoader(inference_data, batch_size=batch_size) # 데이터 전처리
 
 device = torch.device("cpu")
 model = CNN()
