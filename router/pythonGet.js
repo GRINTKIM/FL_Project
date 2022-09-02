@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 )
 
 
-router.get('/test', (req, res) =>{
+router.get('/digit', (req, res) =>{
 
     const options = {
         mode: 'text',
@@ -27,7 +27,7 @@ router.get('/test', (req, res) =>{
         args: ['test1', 'value2', 'value3']
     };
 
-    pythonShell.PythonShell.run('python/test1.py', options, function(err, results){
+    pythonShell.PythonShell.run('python/digit.py', options, function(err, results){
     
     if (err) throw err;
 
