@@ -32,19 +32,23 @@ router.get('/VisualData', async function(req, res){
     const comp = req.body.comp;
     var condition = comp ? { COMP_ID: { [Op.iLike]: `%${comp}%` } } : null;
 
-    // if (comp == null) {
-    //     res.send('Please select COMP_ID')
-    // } --> 이거로 하면 null 값이 들어오면 메세지를 보낼 수 있으나 
+    if (comp == null) {
+        return res.send('Please select COMP_ID')
+    }
+    //  --> 이거로 하면 null 값이 들어오면 메세지를 보낼 수 있으나 
     // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
     // 위와 같은 에러가 발생하고 서버가 종료된다.
     // 수정하고 프론트엔드에서 처리하는 방향으로 하자.
-  
+    // --> return을 사용함으로 해결
+    else if (condition == null) {
+      return res.send('Please select COMP_ID to satisfy WHERE clause.')
+    }
     VisualData.findAll({ where: condition })
       .then((data) => {
-        res.send(data);
+        return res.send(data);
       })
       .catch((err) => {
-        res.status(500).send({
+        return res.status(500).send({
           message:
             err.message || "Some error occurred while retrieving VisualData.",
         });

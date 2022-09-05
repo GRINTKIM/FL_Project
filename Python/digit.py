@@ -13,11 +13,6 @@ from torch.utils.data.dataloader import DataLoader
 # Inference 할 이미지 (업로드 한 이미지)
 img_path = "Python/1/00003_6.jpg"
 
-# print(os.getcwd())
-# print(img_path)
-# image = Image.open(img_path).convert('RGB')
-
-
 #모델 옵션 설정
 size = 28               # input image를 변환할 사이즈, 28x28
 batch_size = 128        # 배치 사이즈
@@ -109,10 +104,6 @@ inference_loader = DataLoader(inference_data, batch_size=batch_size) # 데이터
 device = torch.device("cpu")
 model = CNN()
 model.load_state_dict(torch.load("Python/model.pth", map_location=device))
-# torch.load("Python/model.pth", map_location='cpu')
-# model = CNN().to(device)
-# model.load("Python\model.pth", map_location='cpu')
-# model.load_state_dict(torch.load("Python\model.pth"))
 
 correct = 0
 total = 0

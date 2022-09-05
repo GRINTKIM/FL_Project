@@ -3,6 +3,21 @@ const router = express.Router(); // express 라이브러리 안에 있는 기능
 const {spawn} = require('child_process');
 const pythonShell = require('python-shell');
 
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'C:/Study/Python/1')
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + '.jpg')
+    }
+})
+
+const upload = multer({storage: storage})
+
 
 router.get('/', (req, res) => {
     let dataToSend;
@@ -36,6 +51,17 @@ router.get('/digit', (req, res) =>{
     });
 }
 )
+
+router.post('imgUpload', upload.single('file'), function(req, res){
+    console.log(req.file.path)
+
+    res.status(200).send({
+        message: "OK",
+        fileInfo: req.file.path
+    })
+}
+)
+
 
 
 
