@@ -8,10 +8,11 @@ import torch.nn as nn
 # import torch.optim as optim
 from torchvision import transforms
 from torch.utils.data.dataloader import DataLoader
+import sys
 
 
 # Inference 할 이미지 (업로드 한 이미지)
-img_path = "Python/1/00003_6.jpg"
+img_path = "python/1/" + sys.argv[1]
 
 #모델 옵션 설정
 size = 28               # input image를 변환할 사이즈, 28x28

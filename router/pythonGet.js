@@ -52,18 +52,31 @@ router.get('/digit', (req, res) =>{
 }
 )
 
-router.post('imgUpload', upload.single('file'), function(req, res){
+router.post('/imgUpload', upload.single('file'), function(req, res){
     console.log(req.file.path)
 
-    res.status(200).send({
-        message: "OK",
-        fileInfo: req.file.path
-    })
+    const options = {
+        mode: 'text',
+        pythonPath: '',
+        pythonOptions: ['-u'],
+        scriptPath: '',
+        args: [req.file.filename]
+    };
+
+    // res.status(200).send({
+    //     message: "OK",
+    //     fileInfo: req.file.path
+    // })
+
+    pythonShell.PythonShell.run('python/digit.py', options, function(err, results){
+    
+        if (err) throw err;
+    
+        console.log('results: %j', results)
+        res.send('업로드한 이미지의 숫자는 ' + results + ' 입니다.')
+        });
 }
 )
-
-
-
 
 
 module.exports = router;
