@@ -30,7 +30,10 @@ router.get('/VisualData', async function(req, res){
 
   router.post('/comp', async function(req, res){
     const comp = req.body.comp;
+    const from = req.body.from;
+    const to = req.body.to;
     var condition = comp ? { COMP_ID: { [Op.iLike]: `%${comp}%` } } : null;
+    // var condition1 = comp ? { DATE_T: { [Op.between]: [comp.fromData, comp.toData] } } : null;
 
     if (comp == null) {
         return res.send('Please select COMP_ID')
@@ -43,6 +46,7 @@ router.get('/VisualData', async function(req, res){
     else if (condition == null) {
       return res.send('Please select COMP_ID to satisfy WHERE clause.')
     }
+    condition.DATE_T = {[Op.between]: [from, to]}
     VisualData.findAll({ where: condition })
       .then((data) => {
         return res.send(data);
